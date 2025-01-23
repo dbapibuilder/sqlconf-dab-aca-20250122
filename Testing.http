@@ -1,0 +1,43 @@
+@baseUrl = https://sqlconf-dabaca-20250219-aca.salmondesert-da82b329.westus2.azurecontainerapps.io
+//@baseUrl = http://localhost:5000
+
+### Health Check
+
+GET {{baseUrl}}/
+
+### Get Customers
+
+GET {{baseUrl}}/api/Customer
+
+### Get Products
+
+GET {{baseUrl}}/api/Product
+
+### Get Products
+
+GET {{baseUrl}}/api/ProductCategory
+
+### Update Customer
+
+PUT {{baseUrl}}/api/Customer/CustomerID/1
+
+{
+    "NameStyle": false,
+    "Title": "Mr.",
+    "FirstName": "Orlando",
+    "MiddleName": "N.",
+    "LastName": "Gee",
+    "Suffix": null,
+    "CompanyName": "A Bike Store",
+    "SalesPerson": "adventure-works\\pamela0",
+    "EmailAddress": "orlando0@adventure-works.com",
+    "Phone": "245-555-0173",
+    "PasswordHash": "L/Rlwxzp4w7RWmEgXX+/A7cXaePEPcp+KwQhl2fJL7w=",
+    "PasswordSalt": "1KjXYs4=",
+    "rowguid": "3F5AE95E-B87D-4AED-95B4-C3797AFCB74F",
+    "ModifiedDate": "2005-08-01T00:00:00"
+}
+
+### Graph API Query
+
+POST {{baseUrl}}/graphql
