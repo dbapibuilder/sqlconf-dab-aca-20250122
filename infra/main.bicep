@@ -101,51 +101,51 @@ resource sqlDB 'Microsoft.Sql/servers/databases@2024-05-01-preview' = {
   }
 }
 
-// resource environment 'Microsoft.App/managedEnvironments@2022-03-01' = {
-//   name: '${baseName}-env'
-//   location: location
-//   properties: {
-//     daprAIInstrumentationKey: appInsights.properties.InstrumentationKey
-//     appLogsConfiguration: {
-//       destination: 'log-analytics'
-//       logAnalyticsConfiguration: {
-//         customerId: logAnalytics.properties.customerId
-//         sharedKey: logAnalytics.listKeys().primarySharedKey
-//       }
-//     }
-//   }
-// }
+resource environment 'Microsoft.App/managedEnvironments@2022-03-01' = {
+  name: '${baseName}-env'
+  location: location
+  properties: {
+    daprAIInstrumentationKey: appInsights.properties.InstrumentationKey
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsConfiguration: {
+        customerId: logAnalytics.properties.customerId
+        sharedKey: logAnalytics.listKeys().primarySharedKey
+      }
+    }
+  }
+}
 
-// resource containerApp 'Microsoft.App/containerApps@2022-03-01' ={
-//   name: '${baseName}-aca'
-//   location: location
-//   identity: {
-//     type: 'UserAssigned'
-//     userAssignedIdentities: {
-//       '${muid.id}': {}
-//     }
-//   }
-//   properties:{
-//     managedEnvironmentId: environment.id
-//     configuration: {
-//       ingress: {
-//         targetPort: 5000
-//         external: true
-//       }
-//     }
-//     template: {
-//       containers: [
-//         {
-//           image: 'cwiederspan/adventureworksdab:latest'
-//           name: 'dab-adventureworks'
-//           env: [
-//             {
-//               name: 'DATABASE_CONNECTION_STRING'
-//               value: 'Server=tcp:${sqlServer.properties.fullyQualifiedDomainName},1433;Initial Catalog=${sqlDB.name};Persist Security Info=False;User ID=${muid.properties.clientId};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Authentication=Active Directory Managed Identity;'
-//             }
-//           ]
-//         }
-//       ]
-//     }
-//   }
-// }
+resource containerApp 'Microsoft.App/containerApps@2022-03-01' ={
+  name: '${baseName}-aca'
+  location: location
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${muid.id}': {}
+    }
+  }
+  properties:{
+    managedEnvironmentId: environment.id
+    configuration: {
+      ingress: {
+        targetPort: 5000
+        external: true
+      }
+    }
+    template: {
+      containers: [
+        {
+          image: 'cwiederspan/adventureworksdab:latest'
+          name: 'dab-adventureworks'
+          env: [
+            {
+              name: 'DATABASE_CONNECTION_STRING'
+              value: 'Server=tcp:${sqlServer.properties.fullyQualifiedDomainName},1433;Initial Catalog=${sqlDB.name};Persist Security Info=False;User ID=${muid.properties.clientId};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Authentication=Active Directory Managed Identity;'
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
