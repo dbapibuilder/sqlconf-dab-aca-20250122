@@ -30,7 +30,8 @@
 		"vscode": {
 			"extensions": [
 				"ms-azuretools.vscode-bicep",
-				"jerry-nixon.omnibus-data-api-builder"
+				"jerry-nixon.omnibus-data-api-builder",
+				"humao.rest-client"
 			]
 		}
 	}
