@@ -1,3 +1,5 @@
+extension graphV1
+
 @description('The base name of the resources to create.')
 param baseName string
 
@@ -7,9 +9,28 @@ param location string = resourceGroup().location
 @description('The name of the database to create within the SQL server.')
 param databaseName string
 
+@description('The Entra object ID that will be added to the SQL administrator group.')
+param myEntraUserId string
+
+@description('The local IP address of the user who can connect to SQL server.')
+param myIpAddress string
+
 resource muid 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: '${baseName}-muid'
   location: location
+}
+
+resource adminGroup 'Microsoft.Graph/groups@v1.0' = {
+  uniqueName: '${baseName}-sql-admin-group'
+  displayName: '${baseName}-sql-admin-group'
+  description: 'A group for assigning admin rights to demo SQL servers.'
+  mailEnabled: false
+  mailNickname: '${baseName}-sql-admin-group'
+  securityEnabled: true
+  members: [
+    muid.properties.principalId
+    myEntraUserId
+  ]
 }
 
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
@@ -39,10 +60,10 @@ resource sqlServer 'Microsoft.Sql/servers@2024-05-01-preview' = {
   properties: {
     administrators: {
       administratorType: 'ActiveDirectory'
-      principalType: 'Application'
+      principalType: 'Group'
       azureADOnlyAuthentication: true
-      login: muid.name
-      sid: muid.properties.clientId
+      login: adminGroup.uniqueName
+      sid: adminGroup.id
       tenantId: muid.properties.tenantId
     }
     publicNetworkAccess: 'Enabled'
@@ -51,8 +72,15 @@ resource sqlServer 'Microsoft.Sql/servers@2024-05-01-preview' = {
   resource AllowAllWindowsAzureIps 'firewallRules@2024-05-01-preview' = {
     name: 'AllowAllWindowsAzureIps'
     properties: {
-      endIpAddress: '0.0.0.0'
       startIpAddress: '0.0.0.0'
+      endIpAddress: '0.0.0.0'
+    }
+  }
+  resource AllowMyIpAddress 'firewallRules@2024-05-01-preview' = {
+    name: 'AllowMyIpAddress'
+    properties: {
+      startIpAddress: myIpAddress
+      endIpAddress: myIpAddress
     }
   }
 }
@@ -72,17 +100,6 @@ resource sqlDB 'Microsoft.Sql/servers/databases@2024-05-01-preview' = {
     highAvailabilityReplicaCount: 0
   }
 }
-
-// resource symbolicname 'Microsoft.Sql/servers/administrators@2024-05-01-preview' = {
-//   parent: sqlServer
-//   name: 'string'
-//   properties: {
-//     administratorType: 'ActiveDirectory'
-//     login: 'chwieder@microsoft.com'
-//     sid: 'string'
-//     tenantId: 'string'
-//   }
-// }
 
 // resource environment 'Microsoft.App/managedEnvironments@2022-03-01' = {
 //   name: '${baseName}-env'

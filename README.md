@@ -11,6 +11,9 @@ dotnet tool install -g Microsoft.DataApiBuilder
 # Setup Environment Variables
 source .env
 
+# Get information for 'me' in order to be an administrator
+MY_ENTRA_ID=$(az rest --method GET --uri https://graph.microsoft.com/v1.0/me -o tsv --query id)
+
 # Login to Azure
 az login -t $TENANT_ID
 
@@ -23,6 +26,8 @@ az deployment group create -g $BASE_NAME \
 --parameters \
 baseName=$BASE_NAME \
 location=$LOCATION \
-databaseName=AdventureWorks
+databaseName=AdventureWorks \
+myEntraUserId=$MY_ENTRA_ID \
+myIpAddress=$MY_IP_ADDRESS
 
 ```
