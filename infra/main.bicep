@@ -1,4 +1,4 @@
-extension graphV1
+// extension graphV1
 
 @description('The base name of the resources to create.')
 param baseName string
@@ -9,29 +9,29 @@ param location string = resourceGroup().location
 @description('The name of the database to create within the SQL server.')
 param databaseName string
 
-@description('The Entra object ID that will be added to the SQL administrator group.')
-param myEntraUserId string = ''
+// @description('The Entra object ID that will be added to the SQL administrator group.')
+// param myEntraUserId string = ''
 
-@description('The local IP address of the user who can connect to SQL server.')
-param myIpAddress string = ''
+// @description('The local IP address of the user who can connect to SQL server.')
+// param myIpAddress string = ''
 
 resource muid 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: '${baseName}-muid'
   location: location
 }
 
-resource adminGroup 'Microsoft.Graph/groups@v1.0' = {
-  uniqueName: '${baseName}-sql-admin-group'
-  displayName: '${baseName}-sql-admin-group'
-  description: 'A group for assigning admin rights to demo SQL servers.'
-  mailEnabled: false
-  mailNickname: '${baseName}-sql-admin-group'
-  securityEnabled: true
-  members: [
-    muid.properties.principalId
-    empty(myEntraUserId) ? '' : myEntraUserId
-  ]
-}
+// resource adminGroup 'Microsoft.Graph/groups@v1.0' = {
+//   uniqueName: '${baseName}-sql-admin-group'
+//   displayName: '${baseName}-sql-admin-group'
+//   description: 'A group for assigning admin rights to demo SQL servers.'
+//   mailEnabled: false
+//   mailNickname: '${baseName}-sql-admin-group'
+//   securityEnabled: true
+//   members: [
+//     muid.properties.principalId
+//     empty(myEntraUserId) ? '' : myEntraUserId
+//   ]
+// }
 
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
   name: '${baseName}-law'
@@ -59,11 +59,14 @@ resource sqlServer 'Microsoft.Sql/servers@2024-05-01-preview' = {
   location: location
   properties: {
     administrators: {
-      administratorType: 'ActiveDirectory'
-      principalType: 'Group'
       azureADOnlyAuthentication: true
-      login: adminGroup.uniqueName
-      sid: adminGroup.id
+      administratorType: 'ActiveDirectory'
+      // principalType: 'Group'
+      // login: adminGroup.uniqueName
+      // sid: adminGroup.id
+      principalType: 'Application'
+      login: muid.name
+      sid: muid.properties.clientId
       tenantId: muid.properties.tenantId
     }
     publicNetworkAccess: 'Enabled'
@@ -76,13 +79,13 @@ resource sqlServer 'Microsoft.Sql/servers@2024-05-01-preview' = {
       endIpAddress: '0.0.0.0'
     }
   }
-  resource AllowMyIpAddress 'firewallRules@2024-05-01-preview' = if(!empty(myIpAddress)) {
-    name: 'AllowMyIpAddress'
-    properties: {
-      startIpAddress: myIpAddress
-      endIpAddress: myIpAddress
-    }
-  }
+  // resource AllowMyIpAddress 'firewallRules@2024-05-01-preview' = if(!empty(myIpAddress)) {
+  //   name: 'AllowMyIpAddress'
+  //   properties: {
+  //     startIpAddress: myIpAddress
+  //     endIpAddress: myIpAddress
+  //   }
+  // }
 }
 
 resource sqlDB 'Microsoft.Sql/servers/databases@2024-05-01-preview' = {
