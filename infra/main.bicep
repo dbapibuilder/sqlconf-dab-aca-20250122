@@ -10,10 +10,10 @@ param location string = resourceGroup().location
 param databaseName string
 
 @description('The Entra object ID that will be added to the SQL administrator group.')
-param myEntraUserId string
+param myEntraUserId string = ''
 
 @description('The local IP address of the user who can connect to SQL server.')
-param myIpAddress string
+param myIpAddress string = ''
 
 resource muid 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: '${baseName}-muid'
@@ -29,7 +29,7 @@ resource adminGroup 'Microsoft.Graph/groups@v1.0' = {
   securityEnabled: true
   members: [
     muid.properties.principalId
-    myEntraUserId
+    empty(myEntraUserId) ? '' : myEntraUserId
   ]
 }
 
@@ -76,7 +76,7 @@ resource sqlServer 'Microsoft.Sql/servers@2024-05-01-preview' = {
       endIpAddress: '0.0.0.0'
     }
   }
-  resource AllowMyIpAddress 'firewallRules@2024-05-01-preview' = {
+  resource AllowMyIpAddress 'firewallRules@2024-05-01-preview' = if(!empty(myIpAddress)) {
     name: 'AllowMyIpAddress'
     properties: {
       startIpAddress: myIpAddress
