@@ -7,6 +7,9 @@ param location string = resourceGroup().location
 @description('The name of the database to create within the SQL server.')
 param databaseName string
 
+@description('The full container Uri (with tag) to use for the Azure Container App.')
+param containerUri string
+
 resource muid 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: '${baseName}-muid'
   location: location
@@ -108,7 +111,7 @@ resource containerApp 'Microsoft.App/containerApps@2022-03-01' ={
     template: {
       containers: [
         {
-          image: 'cwiederspan/adventureworksdab:latest'
+          image: containerUri
           name: 'dab-adventureworks'
           env: [
             {

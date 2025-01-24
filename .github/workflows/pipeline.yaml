@@ -5,12 +5,13 @@ on:
   # push:
   #   branches:
   #     - main
-  
+
+env:
+  IMAGE_NAME: '${{ vars.DOCKER_USERNAME }}/${{ vars.CONTAINER_NAME }}'
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      IMAGE_NAME: 'cwiederspan/adventureworksdab'
     steps:
 
       - name: Checkout Code
@@ -47,5 +48,5 @@ jobs:
           scope: resourcegroup
           resourceGroupName: ${{ vars.BASE_NAME }}
           template: ./infra/main.bicep
-          parameters: 'baseName=${{ vars.BASE_NAME}} location=${{ vars.LOCATION }} databaseName=${{ vars.SQL_DB_NAME }}'
+          parameters: 'baseName=${{ vars.BASE_NAME}} location=${{ vars.LOCATION }} databaseName=${{ vars.DATABASE_NAME }} containerUri=$IMAGE_NAME:latest'
           failOnStdErr: false

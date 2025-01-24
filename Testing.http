@@ -1,4 +1,4 @@
-@baseUrl = https://sqlconf-dabaca-20250219-aca.salmondesert-da82b329.westus2.azurecontainerapps.io
+@baseUrl = https://sqlconf-dabaca-20250219-aca.politeflower-e60341e7.westus2.azurecontainerapps.io
 //@baseUrl = http://localhost:5000
 
 ### Health Check
