@@ -47,9 +47,9 @@ source .env
 
 ## Containerization
 
-The [Dockerfile](./dab/Dockerfile) contains a sampling of `dab` commands that curate the exposure of APIs over the database. In this case, there
+The [Dockerfile](./dab/Dockerfile) contains a sampling of `dab` commands that curate the exposure of APIs on top of the database. In this case, there
 are many ways you could approach this, but for simplicity's sake, they have been added directly to the Dockerfile. This makes it easy to build 
-the container and push it to a container registry, Docker Hub in this case.
+the container and push it to a container registry, which is Docker Hub in this case.
 
 ```bash
 
@@ -79,12 +79,12 @@ az group create --name $BASE_NAME --location $LOCATION
 
 # Execute the Bicep file to provision the Azure resources
 az deployment group create -g $BASE_NAME \
---template-file ./infra/main.bicep \
---parameters \
-baseName=$BASE_NAME \
-location=$LOCATION \
-databaseName=$DATABASE_NAME \
-containerUri=$DOCKER_USERNAME/$CONTAINER_NAME:$CONTAINER_TAG
+  --template-file ./infra/main.bicep \
+  --parameters \
+    baseName=$BASE_NAME \
+    location=$LOCATION \
+    databaseName=$DATABASE_NAME \
+    containerUri=$DOCKER_USERNAME/$CONTAINER_NAME:$CONTAINER_TAG
 
 ```
 
@@ -98,7 +98,7 @@ you need to provision an Azure service principal that the pipeline can use to ac
 # Create a Service Principal
 az ad sp create-for-rbac --name $BASE_NAME-sp --sdk-auth --role contributor --scopes /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$BASE_NAME
 
-# TODO: Setup the GitHub Action variables
+# Setup the GitHub Action variables
 
 
 ```
