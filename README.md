@@ -26,6 +26,7 @@ Creating resuable variables in a `.env` file makes the script execution easier. 
 # Rename the .env-sample file
 mv .env-sample .env
 
+# Edit and save the file after providing the following data values
 # TENANT_ID - This should be your Azure Entra Tenant ID, which might be required to login to Azure
 # SUBSCRIPTION_ID - The Azure Subscription ID that you will use to deploy into
 # BASE_NAME - A valid identifier that will be used to build out resource names in Bicep
@@ -36,7 +37,7 @@ mv .env-sample .env
 # DOCKER_USERNAME - Your username for accessing Docker Hub
 # DOCKER_PASSWORD - Your password or PAT token for accessing Docker Hub
 
-# Apply the variables to within your session
+# Apply the variables within your session
 source .env
 
 ```

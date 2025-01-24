@@ -32,7 +32,10 @@
 				"ms-azuretools.vscode-bicep",
 				"jerry-nixon.omnibus-data-api-builder",
 				"humao.rest-client"
-			]
+			],
+			"settings": {
+				"terminal.integrated.defaultProfile.linux": "zsh"
+			}
 		}
 	}
 
