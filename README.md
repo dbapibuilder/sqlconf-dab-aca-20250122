@@ -12,7 +12,7 @@ sample data.
 There are two primary components in this repo to accomplish this:
 
 * [Dockerfile](./dab/Dockerfile) - Contains the main DAB configuration in a simple format that results in a containerized API app.  
-* [Bicep](./infra/main.bicep) - IaC code that provisions a serverless hyperscale SQL Server and database along with the Azure Container App.  
+* [Bicep](./infra/main.bicep) - IaC code that provisions a serverless hyperscale SQL Server and database along with the Azure Container App which then loads the container image.  
 <br/>
 
 > [!IMPORTANT] 
