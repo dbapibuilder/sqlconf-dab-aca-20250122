@@ -48,5 +48,5 @@ jobs:
           scope: resourcegroup
           resourceGroupName: ${{ vars.BASE_NAME }}
           template: ./infra/main.bicep
-          parameters: 'baseName=${{ vars.BASE_NAME }} location=${{ vars.LOCATION }} databaseName=${{ vars.DATABASE_NAME }} containerUri=${{ $IMAGE_NAME }}:latest'
+          parameters: 'baseName=${{ vars.BASE_NAME }} location=${{ vars.LOCATION }} databaseName=${{ vars.DATABASE_NAME }} containerUri=${{ env.IMAGE_NAME }}:latest'
           failOnStdErr: false
