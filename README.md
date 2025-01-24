@@ -15,7 +15,8 @@ There are two primary components in this repo to accomplish this:
 * [Bicep](./infra/main.bicep) - IaC code that provisions a serverless hyperscale SQL Server and database along with the Azure Container App.  
 <br/>
 
-> **NOTE:** This repo and the instructions here assume that you are running these steps in a Linux environment. Possible scenarios for this include
+> [!IMPORTANT] 
+> This repo and the instructions here assume that you are running these steps in a Linux environment. Possible scenarios for this include
 > [GitHub Codespaces](https://github.com/features/codespaces), [Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers), or 
 > [WSL](https://learn.microsoft.com/en-us/windows/wsl/about).
 <br/>
