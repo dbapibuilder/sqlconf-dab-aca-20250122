@@ -4,10 +4,7 @@ This project illustrates the ability to run a Data API Builder app from within A
 
 ## Overview
 
-This repo has everything needed to build a simple [Data API Builder (DAB)](https://learn.microsoft.com/en-us/azure/data-api-builder/overview) 
-application and deploy it to an [Azure Container App (ACA)](https://learn.microsoft.com/en-us/azure/container-apps/overview). At a high level,
-the DAB application will connect to a SQL database that has been loaded up with the [AdventureWorksLT](https://learn.microsoft.com/en-us/sql/samples/adventureworks-install-configure?view=sql-server-ver16&tabs=ssms#deploy-new-sample-database)
-sample data.
+This repo has everything needed to build a simple [Data API Builder (DAB)](https://learn.microsoft.com/en-us/azure/data-api-builder/overview) application and deploy it to an [Azure Container App (ACA)](https://learn.microsoft.com/en-us/azure/container-apps/overview). At a high level, the DAB application will connect to a SQL database that has been loaded up with the [AdventureWorksLT](https://learn.microsoft.com/en-us/sql/samples/adventureworks-install-configure?view=sql-server-ver16&tabs=ssms#deploy-new-sample-database) sample data.
 
 There are two primary components in this repo to accomplish this:
 
@@ -22,8 +19,7 @@ There are two primary components in this repo to accomplish this:
 
 ## Setup Variables
 
-Creating resuable variables in a `.env` file makes the script execution easier. Simply rename the [.env-sample](./.env-sample) to `.env` and set 
-your own values in the file.
+Creating resuable variables in a `.env` file makes the script execution easier. Simply rename the [.env-sample](./.env-sample) to `.env` and set your own values in the file.
 
 ```bash
 
@@ -47,9 +43,7 @@ source .env
 
 ## Containerization
 
-The [Dockerfile](./dab/Dockerfile) contains a sampling of `dab` commands that curate the exposure of APIs on top of the database. In this case, there
-are many ways you could approach this, but for simplicity's sake, they have been added directly to the Dockerfile. This makes it easy to build 
-the container and push it to a container registry, which is Docker Hub in this case.
+The [Dockerfile](./dab/Dockerfile) contains a sampling of `dab` commands that curate the exposure of APIs on top of the database. In this case, there are many ways you could approach this, but for simplicity's sake, they have been added directly to the Dockerfile. This makes it easy to build the container and push it to a container registry, which is Docker Hub in this case.
 
 ```bash
 
@@ -66,8 +60,7 @@ docker push $DOCKER_USERNAME/$CONTAINER_NAME:$CONTAINER_TAG
 
 ## Azure Resource Provisioning
 
-The [Bicep](./infra/main.bicep) file can be used to easily provision the SQL Server, its database, and the Azure Container App that then loads
-up the container image that we built and pushed above.
+The [Bicep](./infra/main.bicep) file can be used to easily provision the SQL Server, its database, and the Azure Container App that then loads up the container image that we built and pushed above.
 
 ```bash
 
@@ -90,15 +83,39 @@ az deployment group create -g $BASE_NAME \
 
 ## Bonus Content
 
-There is also a [GitHub Action](./.github/workflows/pipeline.yaml) file you can use to automate most of the above steps if desired. To do so,
-you need to provision an Azure service principal that the pipeline can use to access your resource group.
+There is also a [GitHub Action](./.github/workflows/pipeline.yaml) file you can use to automate most of the above steps if desired. To do so, you need to provision an Azure service principal that the pipeline can use to access your resource group. You must also setup the appropriate secrets and variables in GitHub to match what you have in the `.env` file, which you can do through the [GitHub CLI](https://cli.github.com/) commands.
 
 ```bash
 
-# Create a Service Principal
-az ad sp create-for-rbac --name $BASE_NAME-sp --sdk-auth --role contributor --scopes /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$BASE_NAME
+# Create an App Registration/Service Principal
+AZURE_CREDS=$(az ad sp create-for-rbac --name $BASE_NAME-sp --sdk-auth --role contributor --scopes /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$BASE_NAME)
 
-# Setup the GitHub Action variables
+# Setup the GitHub Action variables using the GitHub CLI
+gh secret set AZURE_CREDENTIALS -a actions -b"$AZURE_CREDS"
+gh secret set DOCKER_PASSWORD -a actions -b"$DOCKER_PASSWORD"
 
+gh variable set BASE_NAME -b"$BASE_NAME"
+gh variable set LOCATION -b"$LOCATION"
+gh variable set CONTAINER_NAME -b"$CONTAINER_NAME"
+gh variable set CONTAINER_TAG -b"$CONTAINER_TAG"
+gh variable set DATABASE_NAME -b"$DATABASE_NAME"
+gh variable set DOCKER_USERNAME -b"$DOCKER_USERNAME"
+
+```
+
+## Clean Up
+
+The easiest way to clean up is by deleting the resource group that was created.
+
+```bash
+
+# Delete the Resource Group
+az group delete --name $BASE_NAME
+
+# Find the App Registration/Service Principal if you created one in the Bonus Content section
+APP_ID=$(az ad app list --filter "displayname eq '$BASE_NAME-sp'" -o tsv --query "[].{appId:appId}")
+
+# Delete it
+az ad app delete --id $APP_ID
 
 ```
