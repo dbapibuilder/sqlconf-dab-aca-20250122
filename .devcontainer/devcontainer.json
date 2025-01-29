@@ -30,6 +30,7 @@
 		"vscode": {
 			"extensions": [
 				"ms-azuretools.vscode-bicep",
+				"ms-azuretools.vscode-docker",
 				"jerry-nixon.omnibus-data-api-builder",
 				"humao.rest-client"
 			],

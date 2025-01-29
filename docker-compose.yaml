@@ -1,0 +1,23 @@
+services:
+  sql:
+    image: cwiederspan/adventureworkslt:latest
+    ports:
+      - "1433:1433"
+    environment:
+      - MSSQL_SA_PASSWORD=${DUMMY_SA_PASSWORD}
+    healthcheck:
+      # -C disable checks for encryption, double escape password with $$
+      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -C -U sa -P $$MSSQL_SA_PASSWORD -d AdventureWorksLT -Q "SELECT 1" -b -o /dev/null
+      interval: 3s
+      timeout: 30s
+      retries: 10
+      start_period: 5s
+  dab:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_CONNECTION_STRING=Server=sql;Database=AdventureWorksLT;User ID=sa;Password=${DUMMY_SA_PASSWORD};Encrypt=optional
+    depends_on:
+      sql:
+        condition: service_healthy

@@ -34,6 +34,7 @@ mv .env-sample .env
 # CONTAINER_NAME - The name of the container to create/use
 # CONTAINER_TAG - The name of the container tag to create/use
 # DATABASE_NAME - The name of the database to create/use
+# DUMMY_SA_PASSWORD - A dummy password to use when running and connecting to a local SQL container instance
 # DOCKER_USERNAME - Your username for accessing Docker Hub
 # DOCKER_PASSWORD - Your password or PAT token for accessing Docker Hub
 
@@ -42,9 +43,35 @@ source .env
 
 ```
 
+## Design and Development
+
+Using DAB is similar to any other development task where the "inner loop" is key to being able to quickly iterate on using DAB to expose and test APIs against a database. In this demo, we use a containerized version of Microsoft SQL Server to run the AdventureWorksLT database. You can view the details of this container and how it works by examining [this repo](https://github.com/cwiederspan/adventureworkslt-mssql-container). Once DAB creates the `dab-config.json` file, containerizing and running locally can be kicked-off using `docker compose`. The primary component of all of this is the simple [Dockerfile](./Dockerfile) that simply copies the `dab-config.json` file into the official [data-api-builder](https://mcr.microsoft.com/en-us/artifact/mar/azure-databases/data-api-builder/tags) container.
+
+```bash
+
+# Initialize the DAB tool and setup locally
+dotnet tool run dab -- init --database-type "mssql" --connection-string "@env('DATABASE_CONNECTION_STRING')"
+
+# Construct your API surface area with DAB commands
+dotnet tool run dab -- add Customer --source "SalesLT.Customer" --permissions "anonymous:*"     # <= Allow writes to this table
+dotnet tool run dab -- add Address --source "SalesLT.Address" --permissions "anonymous:read"
+dotnet tool run dab -- add CustomerAddress --source "SalesLT.CustomerAddress" --permissions "anonymous:read"
+dotnet tool run dab -- add SalesOrderHeader --source "SalesLT.SalesOrderHeader" --permissions "anonymous:read"
+dotnet tool run dab -- add SalesOrderDetail --source "SalesLT.SalesOrderDetail" --permissions "anonymous:read"
+dotnet tool run dab -- add Product --source "SalesLT.Product" --permissions "anonymous:read"
+dotnet tool run dab -- add ProductCategory --source "SalesLT.ProductCategory" --permissions "anonymous:read"
+dotnet tool run dab -- add ProductModel --source "SalesLT.ProductModel" --permissions "anonymous:read"
+dotnet tool run dab -- add ProductModelProductDescription --source "SalesLT.ProductModelProductDescription" --permissions "anonymous:read"
+dotnet tool run dab -- add ProductDescription --source "SalesLT.ProductDescription" --permissions "anonymous:read"
+
+# Now run the application with Docker Compose
+docker compose up
+
+```
+
 ## Containerization
 
-The [Dockerfile](./dab/Dockerfile) contains a sampling of `dab` commands that curate the exposure of APIs on top of the database. In this case, there are many ways you could approach this, but for simplicity's sake, they have been added directly to the Dockerfile. This makes it easy to build the container and push it to a container registry, which is Docker Hub in this case.
+Using the `dab-config.json` file that was constructed above, use Docker to build a container that can be pushed up to Docker Hub (or some other container registry). 
 
 ```bash
 
@@ -52,7 +79,7 @@ The [Dockerfile](./dab/Dockerfile) contains a sampling of `dab` commands that cu
 docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
 # Build the container
-docker build ./dab -f ./dab/Dockerfile -t $DOCKER_USERNAME/$CONTAINER_NAME:$CONTAINER_TAG
+docker build . -t $DOCKER_USERNAME/$CONTAINER_NAME:$CONTAINER_TAG
 
 # Push the container
 docker push $DOCKER_USERNAME/$CONTAINER_NAME:$CONTAINER_TAG
