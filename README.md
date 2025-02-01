@@ -5,7 +5,7 @@ This repo has everything needed to build a simple [Data API Builder (DAB)](https
 There are two primary components in this repo to accomplish this:
 
 * [Dockerfile](./dab/Dockerfile) - Contains the main DAB configuration in a simple format that results in a containerized API app.  
-* [Bicep](./infra/main.bicep) - IaC code that provisions a serverless hyperscale SQL Server and database along with the Azure Container App which then loads the container image.  
+* [Bicep](./infra/main.bicep) - IaC code that provisions a serverless hyperscale SQL Server and database along with the Azure Container App which then loads the container image.
 <br/>
 
 > [!IMPORTANT] 
