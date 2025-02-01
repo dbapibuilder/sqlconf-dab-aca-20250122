@@ -153,6 +153,7 @@ gh variable set DATABASE_NAME -b"$DATABASE_NAME"
 gh variable set DOCKER_USERNAME -b"$DOCKER_USERNAME"
 
 ```
+<br/>
 
 ## Clean Up
 
