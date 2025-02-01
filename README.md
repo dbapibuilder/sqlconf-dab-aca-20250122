@@ -1,4 +1,4 @@
-# Deploy Data API builder in Azure Container Apps
+# Deploy Data API Builder in Azure Container Apps
 
 This project illustrates the ability to run a Data API Builder app from within Azure Container Apps.
 
