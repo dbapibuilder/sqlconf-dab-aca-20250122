@@ -1,9 +1,5 @@
 # Deploy Data API Builder in Azure Container Apps
 
-This project illustrates the ability to run a Data API Builder app from within Azure Container Apps.
-
-## Overview
-
 This repo has everything needed to build a simple [Data API Builder (DAB)](https://learn.microsoft.com/en-us/azure/data-api-builder/overview) application and deploy it to an [Azure Container App (ACA)](https://learn.microsoft.com/en-us/azure/container-apps/overview). At a high level, the DAB application will connect to a SQL database that has been loaded up with the [AdventureWorksLT](https://learn.microsoft.com/en-us/sql/samples/adventureworks-install-configure?view=sql-server-ver16&tabs=ssms#deploy-new-sample-database) sample data.
 
 There are two primary components in this repo to accomplish this:
