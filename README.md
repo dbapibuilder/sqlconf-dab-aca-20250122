@@ -41,7 +41,7 @@ source .env
 
 ```
 
-## Design and Development
+## Topic 1 - Design and Development
 
 Using DAB is similar to any other development task where the "inner loop" is key to being able to quickly iterate on using DAB to expose and test APIs against a database. In this demo, we use a containerized version of Microsoft SQL Server to run the AdventureWorksLT database. You can view the details of this container and how it works by examining [this repo](https://github.com/cwiederspan/adventureworkslt-mssql-container). Once DAB creates the `dab-config.json` file, containerizing and running locally can be kicked-off using `docker compose`. The primary component of all of this is the simple [Dockerfile](./Dockerfile) that simply copies the `dab-config.json` file into the official [data-api-builder](https://mcr.microsoft.com/en-us/artifact/mar/azure-databases/data-api-builder/tags) container.
 
@@ -77,7 +77,7 @@ docker compose up
 
 ```
 
-## Containerization
+## Topic 2 - Containerization
 
 Using the `dab-config.json` file that was constructed above, use Docker to build a container that can be pushed up to Docker Hub (or some other container registry). 
 
@@ -94,7 +94,7 @@ docker push $DOCKER_USERNAME/$CONTAINER_NAME:$CONTAINER_TAG
 
 ```
 
-## Azure Resource Provisioning
+## Topic 3 - Azure Resource Provisioning
 
 The [Bicep](./infra/main.bicep) file can be used to easily provision the SQL Server, its database, and the Azure Container App that then loads up the container image that we built and pushed above.
 
@@ -117,7 +117,7 @@ az deployment group create -g $BASE_NAME \
 
 ```
 
-## Bonus Content
+## Topic 4 - DevOps Pipeline
 
 There is also a [GitHub Action](./.github/workflows/pipeline.yaml) file you can use to automate most of the above steps if desired. To do so, you need to provision an Azure service principal that the pipeline can use to access your resource group. You must also setup the appropriate secrets and variables in GitHub to match what you have in the `.env` file, which you can do through the [GitHub CLI](https://cli.github.com/) commands.
 
