@@ -43,15 +43,23 @@ source .env
 
 ## Topic 1 - Design and Development
 
-Using DAB is similar to any other development task where the "inner loop" is key to being able to quickly iterate on using DAB to expose and test APIs against a database. In this demo, we use a containerized version of Microsoft SQL Server to run the AdventureWorksLT database. You can view the details of this container and how it works by examining [this repo](https://github.com/cwiederspan/adventureworkslt-mssql-container). Once DAB creates the `dab-config.json` file, containerizing and running locally can be kicked-off using `docker compose`. The primary component of all of this is the simple [Dockerfile](./Dockerfile) that simply copies the `dab-config.json` file into the official [data-api-builder](https://mcr.microsoft.com/en-us/artifact/mar/azure-databases/data-api-builder/tags) container.
+Using DAB is similar to any other development task where the "inner loop" is key to being able to quickly iterate on using DAB to expose and test APIs against a database.
 
-> [!IMPORTANT] 
-> You can either create the `dab-config.json` file from scratch by running the all of the `dotnet tool ...` commands below, or simply rename `final-dab-config.json` to `dab-config.json`. Either way will get you a usable `dab-config.json` file for completing all of the remaining steps.
+In order for DAB to work with our database, it is ideal to have a version of the database running locally. To do this, we use a containerized version of Microsoft SQL Server to run the AdventureWorksLT database. You can view the details of this container and how it works by examining [this repo](https://github.com/cwiederspan/adventureworkslt-mssql-container). To accomplish this, we use the `docker-compose.yaml` file to run the database container.
 
 ```bash
 
 # Start the database container by itself
 docker compose up -d sql
+
+```
+
+Now that we have a database running, we can use DAB to interact with it and build out the `dab-config.json` file. 
+
+> [!IMPORTANT] 
+> You can either create the `dab-config.json` file from scratch by running the all of the `dotnet tool ...` commands below, or simply rename `final-dab-config.json` to `dab-config.json`. Either way will get you a usable `dab-config.json` file for completing all of the remaining steps.
+
+```bash
 
 # Load the DAB tool so it is ready to use
 dotnet tool install --global Microsoft.DataApiBuilder
@@ -72,7 +80,13 @@ dotnet tool run dab -- add ProductModel --source "SalesLT.ProductModel" --permis
 dotnet tool run dab -- add ProductModelProductDescription --source "SalesLT.ProductModelProductDescription" --permissions "anonymous:read"
 dotnet tool run dab -- add ProductDescription --source "SalesLT.ProductDescription" --permissions "anonymous:read"
 
-# Now run the whole application application with Docker Compose
+```
+
+Once we have our `dab-config.json` file, containerizing and running it locally is the final step. The most important aspect of all of this is the simple [Dockerfile](./Dockerfile) that copies the `dab-config.json` file into the official [data-api-builder](https://mcr.microsoft.com/en-us/artifact/mar/azure-databases/data-api-builder/tags) container which is taken care of using `docker compose`
+
+```bash
+
+# Run the whole application application with Docker Compose
 docker compose up
 
 ```
