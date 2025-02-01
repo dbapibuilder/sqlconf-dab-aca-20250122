@@ -15,7 +15,7 @@ There are two primary components in this repo to accomplish this:
 > [!IMPORTANT] 
 > This repo and the instructions here assume that you are running these steps in a Linux environment. Possible scenarios for this include [GitHub Codespaces](https://github.com/features/codespaces), [Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers), or [WSL](https://learn.microsoft.com/en-us/windows/wsl/about).
 
-## Setup Variables
+## Prerequisites - Setup Variables
 
 Creating resuable variables in a `.env` file makes the script execution easier. Simply rename the [.env-sample](./.env-sample) to `.env` and set your own values in the file.
 
