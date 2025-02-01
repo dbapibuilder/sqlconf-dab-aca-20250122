@@ -9,7 +9,6 @@ There are two primary components in this repo to accomplish this:
 
 > [!IMPORTANT] 
 > This repo and the instructions here assume that you are running these steps in a Linux environment. Possible scenarios for this include [GitHub Codespaces](https://github.com/features/codespaces), [Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers), or [WSL](https://learn.microsoft.com/en-us/windows/wsl/about).
-<br/>
 
 ## Prerequisites - Setup Variables
 
@@ -36,7 +35,6 @@ mv .env-sample .env
 source .env
 
 ```
-<br/>
 
 ## Topic 1 - Design and Development
 
@@ -87,7 +85,6 @@ Once we have our `dab-config.json` file, containerizing and running it locally i
 docker compose up
 
 ```
-<br/>
 
 ## Topic 2 - Containerization
 
@@ -105,7 +102,6 @@ docker build . -t $DOCKER_USERNAME/$CONTAINER_NAME:$CONTAINER_TAG
 docker push $DOCKER_USERNAME/$CONTAINER_NAME:$CONTAINER_TAG
 
 ```
-<br/>
 
 ## Topic 3 - Azure Resource Provisioning
 
@@ -129,7 +125,6 @@ az deployment group create -g $BASE_NAME \
     containerUri=$DOCKER_USERNAME/$CONTAINER_NAME:$CONTAINER_TAG
 
 ```
-<br/>
 
 ## Topic 4 - DevOps Pipeline
 
@@ -152,7 +147,6 @@ gh variable set DATABASE_NAME -b"$DATABASE_NAME"
 gh variable set DOCKER_USERNAME -b"$DOCKER_USERNAME"
 
 ```
-<br/>
 
 ## Clean Up
 
