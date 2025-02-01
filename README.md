@@ -40,6 +40,7 @@ mv .env-sample .env
 source .env
 
 ```
+<br/>
 
 ## Topic 1 - Design and Development
 
@@ -90,6 +91,7 @@ Once we have our `dab-config.json` file, containerizing and running it locally i
 docker compose up
 
 ```
+<br/>
 
 ## Topic 2 - Containerization
 
@@ -107,6 +109,7 @@ docker build . -t $DOCKER_USERNAME/$CONTAINER_NAME:$CONTAINER_TAG
 docker push $DOCKER_USERNAME/$CONTAINER_NAME:$CONTAINER_TAG
 
 ```
+<br/>
 
 ## Topic 3 - Azure Resource Provisioning
 
@@ -130,6 +133,7 @@ az deployment group create -g $BASE_NAME \
     containerUri=$DOCKER_USERNAME/$CONTAINER_NAME:$CONTAINER_TAG
 
 ```
+<br/>
 
 ## Topic 4 - DevOps Pipeline
 
